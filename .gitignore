@@ -1,5 +1,32 @@
+
+# --- Python ---
 __pycache__/
-.venv/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+
+# --- Environment & secrets ---
+.env
+*.env
+.env.*
+.envrc
+
+# --- Jupyter Notebooks ---
 .ipynb_checkpoints/
+*.ipynb~ 
+
+# --- OS files ---
+.DS_Store
+Thumbs.db
+
+# --- Virtual environments ---
+.venv/
+venv/
+ENV/
+env/
+
+
+# --- Vector store ---
 vectorstore
-chroma

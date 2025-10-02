@@ -29,4 +29,4 @@ env/
 
 
 # --- Vector store ---
-vectorstore
+vectorstore*

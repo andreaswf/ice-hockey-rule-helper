@@ -31,3 +31,7 @@ env/
 # --- Vector store ---
 vectorstore*
 data/vectorstore
+
+
+
+.pytest_cache

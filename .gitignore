@@ -30,3 +30,4 @@ env/
 
 # --- Vector store ---
 vectorstore*
+data/vectorstore

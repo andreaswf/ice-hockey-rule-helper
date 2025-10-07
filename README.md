@@ -1,21 +1,17 @@
 # Ice hockey rule assistant
 ## This is still under development
+### Currently extracting logic from experimental notebooks to scripts, creating an API.
 
 ## The project
-This project is for familarising myself with the LandChain architecture. The goal of the project is to create a working prototype of an ice hockey rule assistant LLM using RAG and the official IIHF rulebook. The makes use of:
-- LLM prompt templates
-- Text splitting
-- OpenAI embeddings
-- OpenAI API (there is also a local version running Llama)
-- FAISS or Chroma for vector store
-- Retriever for single or batches
-- A RAG pipeline
+This project is for familarising myself with the LandChain architecture. The goal of the project is to create a working prototype of an ice hockey rule assistant using RAG and the official IIHF rulebook. The makes use of:
+- LLM via OpenAI
+- Text splitting for rules and subrules, and further splitting subrules using ParentDocumentRetriever
+- FAISS for vectorstore
+- Both singlequery and multiquery retriever
+- Citations to the rule used
+- Evaluation using a testset of rules and ground truth.
 
-Will futher add the use of agentic architecture for the:
-- selecting the correct rulebook (if both IIHF and NHL would be available)
-- verifying citations to the rulebook are correct 
-- rewrite the prompt into multiple examples for better lookup
-- if the input prompt is a game situation, rewrite it to a better prompt for the model
+Further looking to add:
+- Something to verify citations to the rulebook are correct
+- If the question is a game situation, then rewrite into a better question/prompt.
 
-
-Currently the project is being tested in notebooks. The goal is to add an API using FastAPI for single and batch predictions.

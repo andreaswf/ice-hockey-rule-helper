@@ -23,7 +23,7 @@ def merge_docs(docs: list[Document], source: str) -> list[Document]:
     parts = []
     # sticth docs back together
     for i, d in enumerate(docs, start=1):
-        parts.append(f"\n\n<<<PAGE {i}>>>\n{d.page_content.strip()}")
+        parts.append(f"{d.page_content}")
     merged_content = "".join(parts)
     
     # create the Document structure with page_content and metadata
@@ -69,7 +69,7 @@ def normalize_ocr(text: str) -> str:
 
 
 # adds rule id and name to metadata
-def add_rule_metadata(m: re.Match, prefix: str) -> dict:
+def rule_metadata(m: re.Match, prefix: str) -> dict:
     """Creates metadata from a regex match for main rules and sub rules
 
     Args:
@@ -126,11 +126,10 @@ def slice_on_regex(docs: list[Document], pattern: re.Pattern, prefix: str) -> li
             chunk = text[m.start():end]
             
             # get new rule metadata and update metadata for the chunk
-            rule_metadata = add_rule_metadata(m, prefix)
-            new_meta = d.metadata.copy()
-            new_meta.update(rule_metadata)
+            new_metadata = d.metadata.copy()
+            new_metadata.update(rule_metadata(m, prefix))
             
-            out.append(Document(page_content=chunk, metadata=new_meta))
+            out.append(Document(page_content=chunk, metadata=new_metadata))
 
     return out
 

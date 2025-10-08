@@ -1,0 +1,32 @@
+[tool.ruff]
+# match your target python
+target-version = "py311"
+line-length = 100
+
+# choose which rule sets to enable (a solid, friendly starting point)
+lint.select = [
+  "E",  # pycodestyle errors
+  "F",  # pyflakes
+  "I",  # import sorting (ruff's isort)
+  "B",  # flake8-bugbear
+  "UP", # pyupgrade
+]
+
+lint.ignore = [
+  "E501", # line too long (let Black handle wrapping instead)
+]
+
+# exclude generated or irrelevant paths
+exclude = [
+  ".venv",
+  "build",
+  "dist",
+  "__pycache__",
+  "notebooks"
+]
+
+[tool.ruff.lint.isort]
+# let ruff know which imports are "yours" to group correctly
+known-first-party = ["rag_hockey"]
+
+

@@ -1,6 +1,6 @@
 import re
-from langchain.schema import Document
 
+from langchain.schema import Document
 
 # regex used for spltting
 MAIN_RE = re.compile(r"RULE[ \u00A0]+(?P<main_id>\d{1,3})[ \u00A0]+(?P<main_name>[A-Z-'´’–/”“]{3,}+(?:[ \u00A0][A-Z-'´’–/”“]+)*)")
@@ -22,7 +22,7 @@ def merge_docs(docs: list[Document], source: str) -> list[Document]:
     """
     parts = []
     # sticth docs back together
-    for i, d in enumerate(docs, start=1):
+    for _i, d in enumerate(docs, start=1):
         parts.append(f"{d.page_content}")
     merged_content = "".join(parts)
     

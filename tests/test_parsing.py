@@ -1,6 +1,6 @@
-from rag_hockey.parsing import normalize_ocr, merge_docs
 from langchain.schema import Document
 
+from rag_hockey.parsing import merge_docs, normalize_ocr
 
 
 # test common splits

@@ -1,4 +1,3 @@
-import config
 import faiss
 from langchain.retrievers import ParentDocumentRetriever
 from langchain.storage import LocalFileStore, create_kv_docstore
@@ -8,6 +7,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+from . import config
 from .parsing import MAIN_RE, SUB_RE, merge_docs, slice_on_regex
 
 

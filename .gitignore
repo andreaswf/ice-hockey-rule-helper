@@ -31,6 +31,7 @@ env/
 
 # --- Vector store ---
 vectorstore*
+parentstore*
 data/vectorstore
 
 

@@ -1,5 +1,4 @@
 
-import config
 from dotenv import load_dotenv
 from langchain.chat_models import init_chat_model
 from langchain.retrievers.multi_query import MultiQueryRetriever
@@ -7,8 +6,10 @@ from langchain.schema import Document
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langsmith import traceable
-from prompts import get_main_prompt_template, get_multiquery_prompt_template
-from retriever import get_retriever
+
+from . import config
+from .prompts import get_main_prompt_template, get_multiquery_prompt_template
+from .retriever import get_retriever
 
 load_dotenv()
 
@@ -64,7 +65,7 @@ def build_rag_chain(prompt_template: ChatPromptTemplate, llm):
     return rag_chain
 
 
-def answer_question(question: str, llm):
+def answer_question(question: str, llm) -> dict:
     docs = retrieve_docs(question, llm)
     context = format_docs(docs)
     

@@ -1,3 +1,18 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rag-hockey"
+version = "0.1.0"
+description = "RAG helpers for ice hockey rules"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.setuptools]
+packages = ["rag_hockey"] 
+
 [tool.ruff]
 # match your target python
 target-version = "py311"
@@ -28,5 +43,3 @@ exclude = [
 [tool.ruff.lint.isort]
 # let ruff know which imports are "yours" to group correctly
 known-first-party = ["rag_hockey"]
-
-

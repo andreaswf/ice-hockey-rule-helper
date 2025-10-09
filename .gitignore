@@ -37,3 +37,4 @@ data/vectorstore
 
 
 .pytest_cache
+rag_hockey.egg-info

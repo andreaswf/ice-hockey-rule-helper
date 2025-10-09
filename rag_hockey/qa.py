@@ -112,27 +112,33 @@ def build_rag_chain(prompt_template: ChatPromptTemplate, llm):
     return rag_chain
 
 
-def answer_question(question: str, llm) -> dict:
+def answer_question(question: str, llm, include_docs: bool = False) -> dict:
     """Answer a question using RAG with document retrieval.
 
     Args:
         question (str): The user question.
         llm (BaseChatModel): LLM used for generation.
+        return_documents (bool, optional): Include retrieved docs in output. Defaults to False.
 
     Returns:
-        dict: Contains the final answer and retrieved documents.
+        dict: {"answer": str, "documents": list[Document] (optional)}
     """
     docs = retrieve_docs(question, llm)
     context = format_docs(docs)
     
     rag_chain = build_rag_chain(prompt_template=get_main_prompt_template(), llm=llm)
     answer = rag_chain.invoke({"question": question, "context": context})
-    return {"answer": answer, "documents": docs}
+    result = {"answer": answer}
+    # check whether to include cods (mostly for debugging)
+    if include_docs:
+        result["docs"] = docs
+    
+    return result
     
     
 
 @traceable
-def rag_bot(question: str) -> dict:
+def rag_bot(question: str, include_docs: bool = False) -> dict:
     """Main entry point for the RAG pipeline.
 
     Args:
@@ -142,4 +148,4 @@ def rag_bot(question: str) -> dict:
         dict: RAG-generated answer and supporting documents.
     """
     llm = get_llm()
-    return answer_question(question, llm)
+    return answer_question(question, llm, include_docs=include_docs)

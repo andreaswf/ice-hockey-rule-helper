@@ -1,18 +1,31 @@
-import faiss
-from langchain.retrievers import ParentDocumentRetriever
-from langchain.storage import LocalFileStore, create_kv_docstore
-from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_community.vectorstores import FAISS
-from langchain_openai.embeddings import OpenAIEmbeddings
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from . import config
+from .helpers import (
+    make_child_splitter,
+    make_empty_vectorstore,
+    make_parent_retriever,
+    make_parent_store,
+)
 from .parsing import MAIN_RE, SUB_RE, merge_docs, slice_on_regex
 
 
 def build_index(pdf_path=config.DOC_PATH, vs_path=config.VS_PATH, parent_path=config.PARENT_PATH):
+    """Build the parent/child retrieval index from a PDF.
     
+    Loads the PDF, crops the pages per config, merges them, slices into main and sub rules,
+    then creates the parent store, child splitter, and an empty FAISS vector store and
+    indexes the chunks. Persists the vector store to ``vs_path`` and the parent store to
+    ``parent_path``.
+
+    Args:
+        pdf_path (str, optional): Path to rulebook PDF. Defaults to config.DOC_PATH.
+        vs_path (str, optional): Path where the FAISS vector store is saved. Defaults to config.VS_PATH.
+        parent_path (str, optional): Path where the parent store is saved/loaded. Defaults to config.PARENT_PATH.
+
+    Returns:
+        ParentDocumentRetriever: A fully configured retriever
+    """
     #load documents, crop, and merge back together
     docs = PyPDFLoader(str(pdf_path)).load()
     docs_cropped = docs[config.CROP_START:config.CROP_END]
@@ -22,37 +35,13 @@ def build_index(pdf_path=config.DOC_PATH, vs_path=config.VS_PATH, parent_path=co
     split_on_main_rules = slice_on_regex(merged, MAIN_RE, prefix='main')
     split_on_sub_rules = slice_on_regex(split_on_main_rules, SUB_RE, prefix="sub")
     
-    # use ParentStore and child splitter
-    parent_store = create_kv_docstore(LocalFileStore(parent_path))
-    child_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=config.CHILD_CHUNK_SIZE,
-        chunk_overlap=config.CHILD_CHUNK_OVERLAP
-    )
+    # create parentstore, childsplitter, empty vectorstore and retriever
+    parent_store = make_parent_store(parent_path)
+    child_splitter = make_child_splitter()
+    vectorstore = make_empty_vectorstore()
+    retriever = make_parent_retriever(vectorstore, parent_store, child_splitter)
     
-    # embeddings and vectorstore
-    embeddings = OpenAIEmbeddings(model=config.EMBED_MODEL)
-    vs_index = faiss.IndexFlatL2(config.EMBED_DIM)
-    vectorstore = FAISS(
-        embedding_function=embeddings,
-        index=vs_index,
-        docstore=InMemoryDocstore({}),
-        index_to_docstore_id={},
-        normalize_L2=True
-    )
-    
-    # retriever
-    retriever = ParentDocumentRetriever(
-        vectorstore=vectorstore,
-        docstore=parent_store,
-        child_splitter=child_splitter,
-        search_type="mmr",
-        search_kwargs={
-            "k": config.RETRIEVER_K,
-            "fetch_k": config.RETRIEVER_FETCH_K,
-            "lambda_mult": config.RETRIEVER_LAMBDA
-        }
-    )
-    
+    # add documents to retriever and save to vs
     retriever.add_documents(split_on_sub_rules)
     vectorstore.save_local(vs_path)
     

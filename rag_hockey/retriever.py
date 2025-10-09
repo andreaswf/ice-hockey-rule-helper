@@ -1,51 +1,48 @@
 
 from pathlib import Path
 
-from langchain.retrievers import ParentDocumentRetriever
-from langchain.storage import LocalFileStore, create_kv_docstore
 from langchain_community.vectorstores import FAISS
-from langchain_openai.embeddings import OpenAIEmbeddings
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from . import config
+from .helpers import make_child_splitter, make_embeddings, make_parent_retriever, make_parent_store
 from .ingest import build_index
 
 
 def load_retriever(vs_path=config.VS_PATH, parent_path=config.PARENT_PATH):
-    embeddings = OpenAIEmbeddings(model=config.EMBED_MODEL)
+    """Load a retriever from saved vectorstore and parent store.
+
+    Args:
+        vs_path (str, optional): Path to the saved vectorstore. Defaults to ``config.VS_PATH``.
+        parent_path (str, optional): Path to the saved parent store. Defaults to ``config.PARENT_PATH``.
+
+    Returns:
+        ParentDocumentRetriever: Loaded retriever.
+    """
+    embeddings = make_embeddings()
     vectorstore = FAISS.load_local(
         folder_path=vs_path,
         embeddings=embeddings,
         allow_dangerous_deserialization=True
     )
     
-    # laod parrent stores
-    parent_store = create_kv_docstore(LocalFileStore(parent_path))
-    
-    # recreate child splitter. Purely as ParentDocumentRetriever needs it as parameter
-    child_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=config.CHILD_CHUNK_SIZE,
-        chunk_overlap=config.CHILD_CHUNK_OVERLAP
-    )
-    
-    # retriever
-    retriever = ParentDocumentRetriever(
-        vectorstore=vectorstore,
-        docstore=parent_store,
-        child_splitter=child_splitter,
-        search_type="mmr",
-        search_kwargs={
-            "k": config.RETRIEVER_K,
-            "fetch_k": config.RETRIEVER_FETCH_K,
-            "lambda_mult": config.RETRIEVER_LAMBDA
-        }
-    )
-    
+    parent_store = make_parent_store(parent_path)
+    child_splitter = make_child_splitter()
+    retriever = make_parent_retriever(vectorstore, parent_store, child_splitter)
     
     return retriever
 
 
 def get_retriever(rebuild=False, vs_path=config.VS_PATH, parent_path=config.PARENT_PATH):
+    """Get an existing retriever or rebuild it if missing.
+
+    Args:
+        rebuild (bool, optional): Force rebuild even if data exists. Defaults to False.
+        vs_path (str, optional): Path to the vectorstore. Defaults to ``config.VS_PATH``.
+        parent_path (str, optional): Path to the parent store. Defaults to ``config.PARENT_PATH``.
+
+    Returns:
+        ParentDocumentRetriever: Ready-to-use retriever.
+    """
     vs_exists = Path(vs_path).exists()
     parent_exists = Path(parent_path).exists()
     

@@ -4,8 +4,13 @@ from pathlib import Path
 from langchain_community.vectorstores import FAISS
 
 from . import config
-from .helpers import make_child_splitter, make_embeddings, make_parent_retriever, make_parent_store
 from .ingest import build_index
+from .retriever_helpers import (
+    make_child_splitter,
+    make_embeddings,
+    make_parent_retriever,
+    make_parent_store,
+)
 
 
 def load_retriever(vs_path=config.VS_PATH, parent_path=config.PARENT_PATH):

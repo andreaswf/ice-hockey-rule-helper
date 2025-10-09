@@ -1,13 +1,13 @@
 from langchain_community.document_loaders import PyPDFLoader
 
 from . import config
-from .helpers import (
+from .parsing import MAIN_RE, SUB_RE, merge_docs, slice_on_regex
+from .retriever_helpers import (
     make_child_splitter,
     make_empty_vectorstore,
     make_parent_retriever,
     make_parent_store,
 )
-from .parsing import MAIN_RE, SUB_RE, merge_docs, slice_on_regex
 
 
 def build_index(pdf_path=config.DOC_PATH, vs_path=config.VS_PATH, parent_path=config.PARENT_PATH):

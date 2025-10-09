@@ -116,7 +116,7 @@ def answer_question(question: str, llm) -> dict:
     """Answer a question using RAG with document retrieval.
 
     Args:
-        question (str): The user’s question.
+        question (str): The user question.
         llm (BaseChatModel): LLM used for generation.
 
     Returns:

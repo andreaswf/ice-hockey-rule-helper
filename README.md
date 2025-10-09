@@ -1,10 +1,10 @@
 # Ice hockey rule assistant
 ## This is still under development
-### Currently extracting logic from experimental notebooks to scripts, creating an API.
 
 ## The project
 This project is for familarising myself with the LandChain architecture. The goal of the project is to create a working prototype of an ice hockey rule assistant using RAG and the official IIHF rulebook. The makes use of:
 - LLM via OpenAI
+- API via fastAPI
 - Text splitting for rules and subrules, and further splitting subrules using ParentDocumentRetriever
 - FAISS for vectorstore
 - Both singlequery and multiquery retriever

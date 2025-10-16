@@ -14,3 +14,4 @@ This project is for familarising myself with the LandChain architecture. The goa
 Further looking to add:
 - Something to verify citations to the rulebook are correct
 - If the question is a game situation, then rewrite into a better question/prompt.
+ 

@@ -43,4 +43,22 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+      
+      # Azure login (expects JSON from az ad sp create-for-rbac)
+      - uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Deploy to Azure Container Apps by digest
+      - uses: azure/container-apps-deploy-action@v2
+        with:
+          resourceGroup: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          environment: ${{ secrets.AZURE_CONTAINERAPPS_ENV }}
+          containerAppName: ${{ secrets.AZURE_CONTAINERAPP_NAME }}
+          imageToDeploy: ghcr.io/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
+          targetPort: 8000
+          # If image is private, provide GHCR creds for Azure to pull:
+          registryServer: ghcr.io
+          registryUsername: ${{ github.repository_owner }}
+          registryPassword: ${{ secrets.GHCR_TOKEN }}
 

@@ -47,7 +47,9 @@ jobs:
       # Azure login (expects JSON from az ad sp create-for-rbac)
       - uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # Deploy to Azure Container Apps by digest
       - uses: azure/container-apps-deploy-action@v2

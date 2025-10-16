@@ -1,0 +1,33 @@
+# Ignore local dev artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.log
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Notebooks and experiments
+notebooks/
+
+# Stuff from data folder
+parentstore
+evaluation
+vectorstore
+
+
+# Tests
+tests/
+
+# Git and IDE junk
+.git/
+.gitignore
+.vscode/
+.idea/
+*.egg-info/
+dist/
+build/

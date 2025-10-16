@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 from typing import Any
 
@@ -24,6 +25,8 @@ class QAResponse(BaseModel):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     print("DO THIS AT LOAD")
+    if not os.getenv("OPENAI_API_KEY"):
+        raise RuntimeError("Missing OPENAI_API_KEY")
     
     get_retriever()
     llm = get_llm()

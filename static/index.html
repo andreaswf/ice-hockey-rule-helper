@@ -55,6 +55,13 @@
         answerBox.value = "Error: " + err.message;
       }
     });
+
+    questionInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      askBtn.click();
+    }
+    });
   </script>
 </body>
 </html>

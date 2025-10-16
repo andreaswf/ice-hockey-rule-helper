@@ -13,7 +13,7 @@ def get_main_prompt_template() -> ChatPromptTemplate:
     system_template = """You are an ice hockey rule assistant.
 
     Follow these rules:
-    - Answer ONLY using the provided context below. If no context contains a rule identifier, respond "I don't know". Do not infer from gneeral hockey knowledge.
+    - Answer ONLY using the provided context below. If context does not answer the question, respond "I don't know". Do not infer from general hockey knowledge.
     - Use bulletpoints. 
     - After each bullet, append the Citation for the sentence(s) you used.
     - Citations example: [78.5 DISALLOWED GOALS, GOALS]

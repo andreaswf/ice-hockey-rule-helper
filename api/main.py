@@ -3,6 +3,8 @@ from contextlib import asynccontextmanager
 from typing import Any
 
 from fastapi import FastAPI, Query, Request
+from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from rag_hockey.qa import answer_question, get_llm
@@ -41,9 +43,19 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-@app.get("/")
+# Serve static folder
+static_dir = os.path.join(os.path.dirname(__file__), "..", "static")
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+@app.get("/ui")
+def serve_ui():
+    return FileResponse(os.path.join(static_dir, "index.html"))
+
+
+
+@app.get("/", include_in_schema=False)
 def root():
-    return {"status": "ok", "message": "Ice Hockey Rule Assistant API is running"}
+    return RedirectResponse(url="/ui", status_code=307)
 
 
 @app.post("/predict", response_model=QAResponse)

@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir -r requirements.runtime.txt
 COPY api/ api/
 COPY rag_hockey/ rag_hockey/
 COPY data/ data/
+COPY static/ static/
 
 EXPOSE 8000
 
